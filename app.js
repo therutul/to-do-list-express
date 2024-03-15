@@ -1,5 +1,5 @@
 const express=require('express')
-const port=5500
+const port=process.env.PORT || 5500
 const app=express()
 app.set('view engine','ejs')
 app.use(express.urlencoded({ extended: true }));
