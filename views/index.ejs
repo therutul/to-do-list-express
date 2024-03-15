@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>To Do List</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+        <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+        <style>
+            body{
+                background-color: #F2F1EB;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-12 col-md-10 col-lg-8 col-xl-6 border bg-light py-2">
+                    <h1 class="text-center bg-warning-subtle rounded-0 p-2">To Do List</h1>
+                    <form action="/insert" id="getForm" method="post">
+                        <div id="blankTask" class="row gy-2">
+                            <div class="col-8">
+                                <input type="hidden" value="" name="taskid">
+                                <input type="text" name="taskname" value="" id="blank" class="rounded-pill form-control h-100 ps-3" placeholder="Enter Task" autocomplete="off">
+                            </div>
+                            <div class="col-4 text-center d-flex justify-content-end gap-2">
+                                <div class="d-block">
+                                    <button id="insertTaskBtn" class="btn rounded-0 bg-success-subtle fs-2 d-flex justify-content-center align-items-center" style="width: 79px;height: 50px;"><i class='text-primary bx bxs-plus-circle'></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="insertedTask" class="row my-1">
+                        <%taskData.forEach((val)=>{%>
+                            <form action="/insert" id="getForm-<%=val.id%>" method="post">
+                                <div class="row my-1">
+                                    <div class="col-8">
+                                        <input type="hidden" value="<%=val.id%>" name="taskid" id="taskid-<%=val.id%>">
+                                        <input type="text" name="taskname" id="taskname-<%=val.id%>" value="<%=val.name%>" class="rounded-pill ps-3 form-control h-100" autocomplete="off" disabled>
+                                    </div>
+                                    <div class="col-4 text-center d-flex justify-content-end gap-2">
+                                        <div id="edit-<%=val.id%>" onclick="editTask(this.id)" class="d-block">
+                                            <button class="btn rounded-0 bg-success-subtle fs-2 d-flex justify-content-center align-items-center" style="width: 79px;height: 50px;"><i class='text-info bx bxs-edit'></i></button>
+                                        </div>
+                                        <div id="success-<%=val.id%>" onclick="updateTask(this.id)" class="d-none">
+                                            <button class="btn rounded-0 bg-success-subtle fs-2 d-flex justify-content-center align-items-center" style="width: 79px;height: 50px;"><i class='text-success bx bxs-check-circle'></i></button>
+                                        </div>
+                                        <div id="del-<%=val.id%>" onclick="deleteTask(this.id)" class="d-block">
+                                            <button class="btn rounded-0 bg-success-subtle fs-2 d-flex justify-content-center align-items-center" style="width: 79px;height: 50px;"><a href="/delete?id=<%=val.id%>"><i class='text-danger bx bxs-trash'></i></a></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        <%})%>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+        <script>
+            insertTaskBtn.addEventListener("click",function(event){
+                event.preventDefault()
+                if (document.getElementById('blank').value === "") {
+                    document.getElementById('blank').style.borderColor="red"
+                }else{
+                    let getForm=document.getElementById('getForm')
+                    let insertedTask=document.getElementById('insertedTask')
+                    let blankTask=document.getElementById('blankTask')
+                    let insertTaskBtn=document.getElementById('insertTaskBtn')
+                    getForm.submit()
+                }
+                
+
+            })
+            let editTask=(buttonID)=>{
+                event.preventDefault()
+                let id=buttonID.split("-")[1]
+                document.getElementById('taskname-'+id).removeAttribute("disabled")
+                document.getElementById('success-'+id).classList.replace("d-none","d-block")
+                document.getElementById('edit-'+id).classList.replace("d-block","d-none")
+            }
+            let updateTask=(buttonID)=>{
+                event.preventDefault()                
+                let id=buttonID.split("-")[1]
+                let editForm=document.getElementById('getForm-'+id)
+                let taskValue=document.getElementById('taskname-'+id).value
+                console.log(taskValue)
+                editForm.submit()
+            }
+
+
+        </script>
+    </body>
+</html>
